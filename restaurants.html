@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="theme-color" content="#269426">
+    <meta name="msapplication-config" content="none">
+    <title>Restaurants - Custom Dining Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Custom styles specific to restaurants page */
+        .search-bar {
+            width: 300px;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .content-header {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="assets/custom-logo.png" alt="Custom Dining Logo" style="height: 40px; margin-right: 10px;">
+                <h2>Custom Dining</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="users.html"><i class="fas fa-users"></i> Users</a>
+                    </li>
+                    <li class="active">
+                        <a href="restaurants.html"><i class="fas fa-utensils"></i> Restaurants</a>
+                    </li>
+                    <li>
+                        <a href="meals.html"><i class="fas fa-hamburger"></i> Meals</a>
+                    </li>
+                    <li>
+                        <a href="#" id="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchRestaurants" placeholder="Search restaurants...">
+                </div>
+                <div class="user-menu">
+                    <span>Admin User</span>
+                    <div class="avatar">AU</div>
+                </div>
+            </header>
+
+            <div class="content">
+                <div class="content-header">
+                    <h1>Restaurants</h1>
+                    <div>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRestaurantModal" onclick="loadRestaurantOwners()">
+                            <i class="fas fa-plus me-2"></i> Add Restaurant
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Restaurants Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover" id="restaurants-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th width="20%">Restaurant Name</th>
+                                <th width="15%">Location</th>
+                                <th width="15%">Cuisine Type</th>
+                                <th width="15%">Contact Email</th>
+                                <th width="15%">Owner Email</th>
+                                <th width="10%" class="text-center">Status</th>
+                                <th width="10%" class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="restaurants-tbody" class="table-group-divider">
+                            <tr>
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <p class="mt-2 mb-0">Loading restaurants...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <div class="text-muted small" id="showing-info">Showing 0 to 0 of 0 entries</div>
+                    <nav aria-label="Restaurants pagination">
+                        <ul class="pagination mb-0">
+                            <li class="page-item" id="first-page">
+                                <button class="page-link" aria-label="First">
+                                    <span aria-hidden="true">&laquo;&laquo;</span>
+                                </button>
+                            </li>
+                            <li class="page-item" id="prev-page">
+                                <button class="page-link" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </button>
+                            </li>
+                            <li class="page-item disabled">
+                                <span class="page-link" id="page-info">Page 1 of 1</span>
+                            </li>
+                            <li class="page-item" id="next-page">
+                                <button class="page-link" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </button>
+                            </li>
+                            <li class="page-item" id="last-page">
+                                <button class="page-link" aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Restaurant Modal -->
+    <div class="modal fade" id="addRestaurantModal" tabindex="-1" aria-labelledby="addRestaurantModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addRestaurantModalLabel">Add New Restaurant</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="addRestaurantForm">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="restaurantName" class="form-label">Restaurant Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="restaurantName" name="name" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="location" class="form-label">Location <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="location" name="location" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="contactEmail" class="form-label">Contact Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="contactEmail" name="contactEmail" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="contactNumber" class="form-label">Contact Number <span class="text-danger">*</span></label>
+                                    <input type="tel" class="form-control" id="contactNumber" name="contactNumber" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="website" class="form-label">Website <span class="text-danger">*</span></label>
+                                    <input type="url" class="form-control" id="website" name="website" required 
+                                        pattern="https?://.+\.\S{2,}" 
+                                        title="Please enter a valid URL (e.g., https://example.com)">
+                                    <div class="invalid-feedback">
+                                        Please provide a valid website URL (e.g., https://example.com)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="ownerId" class="form-label">Owner <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="ownerId" name="userId" required>
+                                        <option value="" disabled selected>Select Owner</option>
+                                        <!-- Owners will be loaded here -->
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cuisineType" class="form-label">Cuisine Type <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="cuisineType" name="cuisineType" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="capacity" class="form-label">Capacity</label>
+                                    <input type="number" class="form-control" id="capacity" name="capacity" min="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="openingHours" class="form-label">Opening Hours</label>
+                                    <textarea class="form-control" id="openingHours" name="openingHours" rows="2"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="hasOutdoorSeating" name="hasOutdoorSeating">
+                                            <label class="form-check-label" for="hasOutdoorSeating">Outdoor Seating</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="hasParking" name="hasParking">
+                                            <label class="form-check-label" for="hasParking">Parking Available</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="isVeganFriendly" name="isVeganFriendly">
+                                            <label class="form-check-label" for="isVeganFriendly">Vegan Friendly</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="isVegetarianFriendly" name="isVegetarianFriendly">
+                                            <label class="form-check-label" for="isVegetarianFriendly">Vegetarian Friendly</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="isGlutenFreeFriendly" name="isGlutenFreeFriendly">
+                                            <label class="form-check-label" for="isGlutenFreeFriendly">Gluten Free Options</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="isHalal" name="isHalal">
+                                            <label class="form-check-label" for="isHalal">Halal</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Restaurant</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Restaurant Details Modal -->
+    <div class="modal fade" id="restaurantDetailsModal" tabindex="-1" aria-labelledby="restaurantDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="restaurantDetailsModalLabel">Restaurant Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="restaurantDetailsContent">
+                    <div class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Loading restaurant details...</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="editRestaurantBtn">Edit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/restaurants.js"></script>
+</body>
+</html>
