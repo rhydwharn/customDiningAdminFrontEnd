@@ -58,16 +58,25 @@ document.addEventListener('DOMContentLoaded', function() {
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email')?.value;
+            const password = document.getElementById('password')?.value;
             const loginButton = document.getElementById('loginButton');
-            const loginButtonText = loginButton.querySelector('.button-text');
-            const loginButtonSpinner = loginButton.querySelector('.spinner-border');
             
-            // Show loading state
-            loginButton.disabled = true;
-            loginButtonText.textContent = 'Signing in...';
-            loginButtonSpinner.classList.remove('d-none');
+            if (!email || !password) {
+                showNotification('Please enter both email and password', 'error');
+                return;
+            }
+            
+            // Safely handle login button states
+            if (loginButton) {
+                const loginButtonText = loginButton.querySelector('.button-text');
+                const loginButtonSpinner = loginButton.querySelector('.spinner-border');
+                
+                // Show loading state
+                loginButton.disabled = true;
+                if (loginButtonText) loginButtonText.textContent = 'Signing in...';
+                if (loginButtonSpinner) loginButtonSpinner.classList.remove('d-none');
+            }
             
             try {
                 const response = await fetch(`${AUTH_BASE_URL}/api/auth/login`, {
@@ -113,10 +122,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Login error:', error);
                 showNotification(error.message || 'Login failed. Please try again.', 'error');
                 
-                // Reset button state
-                loginButton.disabled = false;
-                loginButtonText.textContent = 'Sign In';
-                loginButtonSpinner.classList.add('d-none');
+                // Reset button state if it exists
+                if (loginButton) {
+                    const loginButtonText = loginButton.querySelector('.button-text');
+                    const loginButtonSpinner = loginButton.querySelector('.spinner-border');
+                    
+                    loginButton.disabled = false;
+                    if (loginButtonText) loginButtonText.textContent = 'Sign In';
+                    if (loginButtonSpinner) loginButtonSpinner.classList.add('d-none');
+                }
             }
         });
     }
