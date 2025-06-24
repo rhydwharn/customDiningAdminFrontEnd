@@ -238,7 +238,40 @@ async function loadRecentActivity() {
     }
 }
 
+// Add mobile menu toggle functionality
 document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.querySelector('.sidebar');
+    const menuToggle = document.querySelector('.menu-toggle');
+    let backdrop = document.querySelector('.sidebar-backdrop');
+
+    if (!backdrop) {
+        backdrop = document.createElement('div');
+        backdrop.className = 'sidebar-backdrop';
+        document.body.appendChild(backdrop);
+    }
+
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        backdrop.style.display = 'none';
+    }
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            backdrop.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+        });
+    }
+
+    backdrop.addEventListener('click', closeSidebar);
+
+    // Optionally close sidebar on navigation
+    sidebar.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+});
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', async () => {
     // Check authentication
     const token = localStorage.getItem('token');
     if (!token) {

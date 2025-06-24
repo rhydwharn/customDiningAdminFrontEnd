@@ -473,6 +473,44 @@ a:hover {
     text-align: center;
 }
 
+/* Hamburger menu button */
+.menu-toggle {
+    background: none;
+    border: none;
+    width: 40px;
+    height: 40px;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    margin-right: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    z-index: 1100; /* Above sidebar and backdrop */
+    position: relative;
+}
+
+.menu-toggle:hover {
+    background-color: rgba(38, 148, 38, 0.1);
+}
+
+.menu-toggle:active {
+    background-color: rgba(38, 148, 38, 0.2);
+    transform: scale(0.95);
+}
+
+.menu-toggle i {
+    font-size: 1.75rem;
+    color: var(--primary-color);
+    transition: transform 0.3s ease;
+}
+
+.menu-toggle.active i {
+    transform: rotate(90deg);
+}
+
 .logo {
     margin-bottom: 2rem;
 }
@@ -631,7 +669,6 @@ a:hover {
 .sidebar .logo h2 {
     font-size: 1.25rem;
     color: #333;
-    margin: 0;
 }
 
 .sidebar-nav ul {
@@ -872,23 +909,90 @@ h1 {
 }
 
 /* Responsive */
-@media (max-width: 992px) {
+/* Mobile menu styles */
+@media (max-width: 991px) {
+    /* Reset body overflow when menu is closed */
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+    
+    /* When menu is open, prevent body scroll */
+    body.menu-open {
+        overflow: hidden;
+        height: 100vh;
+        position: fixed;
+        width: 100%;
+    }
+    
+    .menu-toggle {
+        display: flex;
+        z-index: 1100;
+        position: relative;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.5rem;
+    }
+    
     .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 250px;
+        max-width: 85%;
+        z-index: 1050;
         transform: translateX(-100%);
-        transition: transform 0.3s;
-        z-index: 1000;
+        transition: transform 0.3s ease;
+        background: #fff;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     }
     
     .sidebar.active {
         transform: translateX(0);
     }
     
+    .sidebar-backdrop {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1049;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+    }
+    
+    .sidebar-backdrop.active {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+    }
+    
     .main-content {
         margin-left: 0;
+        transition: transform 0.3s ease;
+    }
+    
+    /* When menu is open, shift the main content */
+    body.menu-open .main-content {
+        transform: translateX(250px);
     }
     
     .top-bar {
         padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: #fff;
     }
     
     .search-bar {

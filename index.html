@@ -20,16 +20,16 @@
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="active">
+                    <li class="dashboard-link active">
                         <a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                     </li>
-                    <li>
+                    <li class="users-link">
                         <a href="users.html"><i class="fas fa-users"></i> Users</a>
                     </li>
-                    <li>
+                    <li class="restaurants-link">
                         <a href="restaurants.html"><i class="fas fa-utensils"></i> Restaurants</a>
                     </li>
-                    <li>
+                    <li class="meals-link">
                         <a href="meals.html"><i class="fas fa-hamburger"></i> Meals</a>
                     </li>
                     <li>
@@ -42,6 +42,9 @@
         <!-- Main Content -->
         <main class="main-content">
             <header class="top-bar">
+                <button class="menu-toggle d-lg-none" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <div class="search-bar">
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="Search...">
@@ -95,6 +98,7 @@
 
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/mobile-menu.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
 </html>
